@@ -16,16 +16,17 @@ namespace Input{
     }
 
     abstract InputEvent{
-        Vector3 GetTouchPosition()
         float GetTouchDeltaTime()
     }
 
     class FlickEvent{
+        Vector3 FlickDirection()
 
     }
 
     class TouchEvent{
         
+        int GetTouchObjectId()
     }
 
     InputManager -u-|>IInput

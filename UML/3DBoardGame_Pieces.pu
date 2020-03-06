@@ -1,5 +1,13 @@
 @startuml
+
+
 namespace  Piece{
+note as note1
+可動範囲はそれぞれ相対Idで定義して、
+それをField namespaceのList<int id> GetAdjacentSurface(int crrId)
+で絶対座標に変換
+end note
+
     Interface IPiece{
         float GetSummonCost(void)
         GameObject GetPieceCamera(int id)
@@ -21,14 +29,13 @@ namespace  Piece{
 
 
     abstract Pieces{
-        -Field.FieldInfo MoveRange
+        -Dictionary<int SurfaceType List<bool canMove>> MoveRange
         -float SummonCast
         -GameObject Cameara
         -int PieceId
     }
 
-    note top of Pieces:可動範囲は要検討
-
+    Pieces..note1
     Pieces --|>IPiece
     Pieces --|>MovePiece
 
