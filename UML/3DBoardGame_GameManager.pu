@@ -1,0 +1,139 @@
+@startuml
+namespace GameManager{
+    enum GameState{
+        #Title
+        #GameSetUp
+        #GamePlay
+        #Result
+    }
+
+    abstract GameBaseManager{
+        -void ChangeGameState(GameState gameState)
+    }
+
+    class GameManager{
+
+    }
+
+    note top of GameDebugManager:Gameのデバッグを行う(Logとか)
+    class GameDebugManager{
+
+    }
+
+    namespace GameSetUp{
+        interface IGameSetUp{
+            void GameSetUp
+        }
+
+         class GameSetUp{
+
+        }
+
+        GameSetUp --|> IGameSetUp
+    }
+   
+
+    namespace PlayGame{
+
+        class GamePlay{
+
+        }
+
+        class GameJudgement{
+
+        }
+
+        GamePlay --> GameJudgement 
+       
+    }
+
+
+    abstract StateBase{
+        abstract void ExcuteState()
+    }
+    
+
+    
+
+    namespace ListManager{
+        interface IListManager{
+            void EnumPieces()
+            void GetSelectedPieces() : GameObject
+        }
+
+        class ListGenerater{
+            
+        }
+
+        class ListCtrl{
+
+        }
+
+        ListCtrl --|> IListManager
+        ListCtrl -->ListGenerater
+
+    }
+
+    namespace TitleManager{
+        interface ITitle{ 
+            void DisplayTitle()
+        }
+
+        class Title{
+            void StartGame()
+        }
+
+        Title --|>ITitle
+    }
+
+    namespace ResultManager{
+        interface IResult{
+            void SetResult()
+            void DisplayResult()
+            void Restart()
+            void CalcurateScore()
+        }
+
+        class Result{
+            
+        }
+
+        Result --|>IResult
+    }
+
+    class StateFactory{
+        +StateBase GetTitle()
+        +StateBase GetPlayGame()
+        +StateBase GetGameSet()
+        +StateBase GetResult()
+    }
+    
+    GameManager --|>GameBaseManager
+    GameDebugManager --|>GameBaseManager
+
+
+
+    GameManager.GameState <-u-GameBaseManager
+
+    StateFactory <-d-GameBaseManager
+
+
+    GameManager.GameSetUp.GameSetUp-u--|>StateBase
+    GameManager.PlayGame.GamePlay -u--|>StateBase
+    GameManager.TitleManager.Title-u--|>StateBase
+    GameManager.ResultManager.Result -u--|>StateBase    
+
+    GameManager.GameSetUp.GameSetUp<-d--StateFactory
+    GameManager.PlayGame.GamePlay <-d--StateFactory
+    GameManager.TitleManager.Title<-d--StateFactory
+    GameManager.ResultManager.Result <-d--StateFactory  
+
+
+    
+
+GameManager.PlayGame.GamePlay --u>GameManager.ListManager.ListCtrl
+GameManager.GameSetUp.GameSetUp --u>GameManager.ListManager.ListCtrl
+}
+ 
+
+@enduml

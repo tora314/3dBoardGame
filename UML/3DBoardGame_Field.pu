@@ -1,0 +1,36 @@
+@startuml
+namespace Field{
+
+interface IField{
+    Vector3 GetPositionFromId(int id)
+    void WriteFieldPieceInfo(int pieceId)
+    void DeleteFieldPieceInfo(int pieceId)
+    void ReadFieldPieceInfo(int pieceId)
+
+}
+
+
+
+class FieldManager{
+
+}
+
+note bottom of FieldInfo : Fieldのidと座標の結びつけを定義
+class FieldInfo{
+    +Dictionary<int id , Vector3 position> FieldInfo
+}
+
+note bottom of FieldPieceInfo: Field上の駒の位置を記録
+
+class FieldPieceInfo{
+    +Dictionary<int faceId , int pieceId  > FieldPieceInfo 
+}
+
+FieldManager-->FieldInfo
+FieldManager -->FieldPieceInfo
+
+
+FieldManager --|>IField
+
+}
+@enduml

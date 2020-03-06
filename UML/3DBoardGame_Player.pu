@@ -1,0 +1,30 @@
+@startuml
+namespace Player{
+  interface IPlayer{
+    +List<GameObject> GetMyPieces(void) 
+    +Dictionary<string float> GetPlayerId(void)  
+    +void SetMyPieces(List<GameObject>)
+  }
+
+  abstract PlayerBase{
+      -List<GameObject> MyPieces
+      -int PlayerId
+
+  }
+
+  PlayerBase --|>IPlayer
+
+  class Player{
+
+  }
+
+  Player --> PlayerBase
+
+  class NPC{
+
+  }
+
+  NPC --> PlayerBase
+}
+
+@enduml

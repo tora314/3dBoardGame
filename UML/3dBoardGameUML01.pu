@@ -1,0 +1,131 @@
+@startuml
+namespace  Piece{
+    Interface IPiece{
+        bool MovePiece()
+        float GetSummonCost()
+        GameObject GetPieceCamera()
+        PieceInfo GetPieceInfo()
+    }
+
+    abstract Pieces{
+        -Field.FieldInfo MoveRange
+        -float SummonCast
+        -GameObject Cameara
+        -int PieceId
+    }
+
+    Pieces --|>IPiece
+
+    class King{
+
+    }
+
+    King --u|>Pieces
+    class Porn01{
+
+    }
+
+    Porn01 --u|>Pieces
+}
+
+namespace Field{
+
+interface IField{
+    
+}
+
+class FieldInfo{
+
+}
+
+FieldManager --|>Field
+
+class FieldManager{
+
+}
+
+FieldManager --|>IField
+
+}
+
+namespace GameManager{
+
+    namespace GameSetUp{
+        interface IGameSetUp{
+            void GameSetUp
+        }
+
+         class GameSetUp{
+
+        }
+
+        GameSetUp --|> IGameSetUp
+    }
+   
+
+    namespace PlayGame{
+
+        class GamePlay{
+
+        }
+
+        class GameJudgement{
+
+        }
+
+        GamePlay --> GameJudgement 
+    }
+
+    abstract GameBaseManager{
+
+    }
+
+    class GameManager{
+
+    }
+
+    class GameDebugManager{
+
+    }
+
+    GameManager --|>GameBaseManager
+    GameDebugManager --|>GameBaseManager
+
+    GameManager.GameSetUp.GameSetUp-->GameBaseManager
+    GameManager.PlayGame.GamePlay -->GameBaseManager
+
+    namespace ListManager{
+        interface IListManager{
+            void EnumPieces()
+            void GetSelectedPieces() : GameObject
+        }
+
+        class ListGenerater{
+            
+        }
+
+        class ListCtrl{
+
+        }
+
+        ListCtrl --|> IListManager
+        ListCtrl -->ListGenerater
+
+    }
+}
+
+namespace Player{
+  interface IPlayer{
+
+  }
+
+  abstract PlayerCore{
+
+  }
+}
+
+namespace Camera{
+
+}
+
+@enduml

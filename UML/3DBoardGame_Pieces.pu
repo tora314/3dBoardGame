@@ -1,0 +1,43 @@
+@startuml
+namespace  Piece{
+    Interface IPiece{
+        float GetSummonCost(void)
+        GameObject GetPieceCamera(int id)
+        int GetPieceId(void)
+        Field.FieldInfo GetMoveRange
+
+    }
+
+    interface IMovePieces{
+        bool MovePiece(Vector3 position)
+        bool RotatePiece(Vector3 rotate)
+    }
+
+    abstract MovePiece{
+
+    }
+
+    MovePiece --|>IMovePieces
+
+
+    abstract Pieces{
+        -Field.FieldInfo MoveRange
+        -float SummonCast
+        -GameObject Cameara
+        -int PieceId
+    }
+
+    note top of Pieces:可動範囲は要検討
+
+    Pieces --|>IPiece
+    Pieces --|>MovePiece
+
+    
+
+    King --u|>Pieces
+    Queen --u|>Pieces
+    Porn --u|>Pieces
+    Rook --u|>Pieces
+    Bishop --u|>Pieces
+}
+@enduml

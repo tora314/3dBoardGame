@@ -1,0 +1,40 @@
+@startuml
+namespace Input{
+    interface IInput{
+         InputEvent GetFlickListener()
+         InputEvent GetTouchListener()
+    }
+
+    class InputManager{
+        
+
+    }
+    note top of InputEventFactory:FlickEvent,TouchEventoのAbstractFactory
+    class InputEventFactory{
+        InputEvent GetFlick()
+        InputEvent GetTouch()
+    }
+
+    abstract InputEvent{
+        Vector3 GetTouchPosition()
+        float GetTouchDeltaTime()
+    }
+
+    class FlickEvent{
+
+    }
+
+    class TouchEvent{
+        
+    }
+
+    InputManager -u-|>IInput
+    InputManager-->InputEventFactory
+
+    TouchEvent -u-|> InputEvent
+    FlickEvent -u-|> InputEvent
+
+    InputEventFactory -->FlickEvent
+    InputEventFactory -->TouchEvent
+}
+@enduml
