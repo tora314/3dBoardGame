@@ -6,7 +6,7 @@ interface IField{
     void WriteFieldPieceInfo(int pieceId)
     void DeleteFieldPieceInfo(int pieceId)
     void ReadFieldPieceInfo(int pieceId)
-    List<int id> GetAdjacentSurface(int crrId, Vector3 FowardId)
+    List<int id> GetAdjacentSurface(int crrId, Vector3 FowardDirection)
 
 }
 
