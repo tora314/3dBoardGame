@@ -3,12 +3,12 @@ namespace GameManager{
     enum GameState{
         #Title
         #GameSetUp
-        #GamePlay
+        #PlayGame
         #Result
     }
 
     abstract GameBaseManager{
-        -void ChangeGameState(GameState gameState)
+      -void ChangeGameState(GameState gameState)
     }
 
     class GameManager{
@@ -31,29 +31,36 @@ namespace GameManager{
 
         GameSetUp --|> IGameSetUp
     }
-   
+
 
     namespace PlayGame{
 
-        class GamePlay{
+        class PlayGame{
+          -int SelectedObjectId
+        }
+
+        class NPCManager{
 
         }
 
-        class GameJudgement{
+        note top of PlayCamera :Cameraネームスペース
+        class PlayCamera{
 
         }
 
-        GamePlay --> GameJudgement 
-       
+        PlayGame --> GameJudgement
+        PlayGame --> NPCManager
+        PlayGame --> PlayCamera
+
     }
 
 
     abstract StateBase{
         abstract void ExcuteState()
     }
-    
 
-    
+
+
 
     namespace ListManager{
         interface IListManager{
@@ -62,7 +69,7 @@ namespace GameManager{
         }
 
         class ListGenerater{
-            
+
         }
 
         class ListCtrl{
@@ -75,7 +82,7 @@ namespace GameManager{
     }
 
     namespace TitleManager{
-        interface ITitle{ 
+        interface ITitle{
             void DisplayTitle()
         }
 
@@ -95,7 +102,7 @@ namespace GameManager{
         }
 
         class Result{
-            
+
         }
 
         Result --|>IResult
@@ -107,7 +114,7 @@ namespace GameManager{
         +StateBase GetGameSet()
         +StateBase GetResult()
     }
-    
+
     GameManager --|>GameBaseManager
     GameDebugManager --|>GameBaseManager
 
@@ -119,21 +126,45 @@ namespace GameManager{
 
 
     GameManager.GameSetUp.GameSetUp-u--|>StateBase
-    GameManager.PlayGame.GamePlay -u--|>StateBase
+    GameManager.PlayGame.PlayGame -u--|>StateBase
     GameManager.TitleManager.Title-u--|>StateBase
-    GameManager.ResultManager.Result -u--|>StateBase    
+    GameManager.ResultManager.Result -u--|>StateBase
 
     GameManager.GameSetUp.GameSetUp<-d--StateFactory
-    GameManager.PlayGame.GamePlay <-d--StateFactory
+    GameManager.PlayGame.PlayGame <-d--StateFactory
     GameManager.TitleManager.Title<-d--StateFactory
-    GameManager.ResultManager.Result <-d--StateFactory  
+    GameManager.ResultManager.Result <-d--StateFactory
 
 
-    
 
-GameManager.PlayGame.GamePlay --u>GameManager.ListManager.ListCtrl
+
+GameManager.PlayGame.PlayGame --u>GameManager.ListManager.ListCtrl
 GameManager.GameSetUp.GameSetUp --u>GameManager.ListManager.ListCtrl
 }
- 
+
+note as note1
+  PlayGameクラス
+  (自分のターンが始めるときにキングのカメラをtrueに。)
+  1.EnumPicesで利用可能な駒のリストを取得
+  2.DisplayListに1のリストを渡して表示する
+
+  リストをクリック
+  1.SelectedObjectIdのカメラをIsActivateCameraでfalseに
+  2.GetTouchObjectIdを使ってタッチしたオブジェクトのId取得し、SelectedObjectIdに
+  3.SelectedObjectIdのカメラをIsActivateCameraでtrueに
+
+  (仮案)
+  1.駒の移動相対的な範囲を取得(GetMoveRange)し、絶対Idに変換(GetAdjacentSurface)し、Idから座標に変換(GetPositionFromId)
+  2.そのIDの面にアイコンを表示(メソッド未定義)する
+
+  →アイコンがクリック:そのアイコンに結び付けられた面へと移動する
+  4.アイコンを削除
+  5.相手のターンへ
+
+  →リストがクリック:
+  4.アイコンを削除
+  5.「リストをクリック」へ
+
+end note
 
 @enduml
