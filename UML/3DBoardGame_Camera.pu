@@ -1,0 +1,29 @@
+@startuml
+note top of Camera : Cameraは駒の移動に追従する
+namespace Camera{
+    interface ICamera{
+        +vector3 GetCameraPostion(void)
+        +vector4 GetCameraAngle()
+        +void ActivateCamera(bool OnFlg)
+    }
+
+    abstract CameraBase{
+        -vector3 CameraPosition
+        -vector3 CameraAngle
+        -bool IsActivateCamera
+
+    }
+    CameraBase --|>ICamera
+
+    class PlayCamera{
+
+    }
+
+    class SetUpCamera{
+
+    }
+
+    PlayCamera --|>CameraBase
+    SetUpCamera --|>CameraBase
+}
+@enduml

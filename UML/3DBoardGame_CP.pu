@@ -1,0 +1,24 @@
+@startuml
+namespace CP{
+    interface ICP{
+        void SetInfo(NPC npc , FieldManager  field)
+        CPMove BestMove()
+    }
+
+    class CPMove{
+        -int pieceId
+        -int moveFaceId
+
+        int GetMovePieceId()
+        int GetMoveFaceId()
+    }
+
+    class CPBrain{
+
+    }
+
+    CPBrain --|>ICP
+    CPBrain -->CPMove
+
+}
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+namespace Sound{
+    interface ISound{
+        void PlayBGM(int bgmId )
+        void StopBGM(int bgmId )
+        void PlaySE(int seId)
+    }
+
+    class SoundManager{
+
+        
+    }
+
+    class BGMInfo{
+            +Dictionary<id BGMId , string BGMName>  BgmInfo
+    }
+
+    class SEInfo{
+        +Dictionary<id SEId , string SEName>  SEInfo
+    }
+
+    SoundManager --|>ISound
+
+    SoundManager --> BGMInfo
+    SoundManager -->SEInfo
+}
+@enduml

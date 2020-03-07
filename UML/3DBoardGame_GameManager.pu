@@ -1,0 +1,224 @@
+@startuml
+namespace GameManager{
+    enum GameState{
+        #Title
+        #GameSetUp
+        #PlayGame
+        #Result
+    }
+
+    abstract GameBaseManager{
+      -void ChangeGameState(GameState gameState)
+    }
+
+    class GameManager{
+
+    }
+
+    note top of GameDebugManager:Gameのデバッグを行う(Logとか)
+    class GameDebugManager{
+
+    }
+
+    class ManagerStore{
+        +static PlayerBase Player
+        +static PlayerBase NPC
+        +static FieldManager fieldManager
+        +static PieceManager pieceManager 
+
+    }
+
+ 
+    namespace GameSetUp{
+        
+         class GameSetUp{
+
+        }
+
+        class GameSetUpFactory{
+            ListCtrl GetListCtrlListener()
+            PieceManager GetPieceManagerListener()
+
+        }
+
+        class PointManager{
+            void AddPoint(Picees piece)
+            void ReducePoint(Pieces piece)
+            int GetPoint()
+        }
+
+        class SetUpCameraManager{
+            void ChangeSetUpCamera()
+        }
+
+
+        GameSetUp --> GameSetUpFactory
+        GameSetUp --> SetUpCameraManager
+        GameSetUp -->PointManager
+
+    }
+
+
+    namespace PlayGame{
+
+        class PlayGame{
+          -int SelectedObjectId
+        }
+
+        class TurnManager{
+            int crrTurn
+
+            int GetTurn()
+            void ChangeTurn()
+        }
+
+        note top of PlayCameraManager: カメラインスタンスをIdから取得\n(PieceMnager.GetPiecebyId.GetPieceCamera())して、\n現在のカメラをカメラを切り替える
+        class PlayCameraManager{
+            int crrCameraId
+
+            void ChangeCamera(int pieceId)
+        }
+
+        class PlayGameFactory{
+            ListCtrl GetListCtrlListener()
+            FieldManager GetFieldManagerListener()
+
+        }
+
+        PlayGame --> GameJudgement
+        PlayGame --> PlayGameFactory
+        PlayGame -->TurnManager
+        PlayGame -->PlayCameraManager
+
+
+    }
+
+    note right of StateBase : ExcuteState()で各状態の表示から各処理を全て行う.
+    abstract StateBase{
+        abstract void ExcuteState()
+    }
+
+
+
+
+    namespace ListManager{
+        interface IListManager{
+            List<int pieceId> EnumPieces()
+            void GetSelectedPieces() : GameObject
+            void DisplayList()
+        }
+
+
+
+        class ListCtrl{
+            List<int pieceId> EnabledPiecesId
+        }
+
+        ListCtrl --|> IListManager
+  
+
+    }
+
+    namespace TitleManager{
+        interface ITitle{
+            void StartGame()
+        }
+
+        class Title{
+        }
+
+        Title --|>ITitle
+    }
+
+    namespace ResultManager{
+        interface IResult{
+            void SetResult()
+            void Restart()
+            void CalcurateScore()
+        }
+
+        class Result{
+
+        }
+
+        Result --|>IResult
+    }
+
+    class StateFactory{
+        +StateBase GetTitle()
+        +StateBase GetPlayGame()
+        +StateBase GetGameSet()
+        +StateBase GetResult()
+    }
+
+    GameManager --|>GameBaseManager
+    GameDebugManager --|>GameBaseManager
+
+
+
+    GameManager.GameState <-u-GameBaseManager
+
+    StateFactory <-d-GameBaseManager
+
+
+    GameManager.GameSetUp.GameSetUp-u--|>StateBase
+    GameManager.PlayGame.PlayGame -u--|>StateBase
+    GameManager.TitleManager.Title-u--|>StateBase
+    GameManager.ResultManager.Result -u--|>StateBase
+
+    GameManager.GameSetUp.GameSetUp<-d--StateFactory
+    GameManager.PlayGame.PlayGame <-d--StateFactory
+    GameManager.TitleManager.Title<-d--StateFactory
+    GameManager.ResultManager.Result <-d--StateFactory
+
+    GameManager.PlayGame.PlayGame -u-->ManagerStore
+    GameManager.GameSetUp.GameSetUp -u--->ManagerStore
+   
+    GameManager.GameSetUp.GameSetUp -u--->GameManager.PlayGame.PlayCameraManager
+
+
+
+
+GameManager.PlayGame.PlayGameFactory --u>GameManager.ListManager.ListCtrl
+GameManager.GameSetUp.GameSetUpFactory --u>GameManager.ListManager.ListCtrl
+}
+
+note as note1
+  PlayGameクラス
+  (自分のターンが始めるときにキングのカメラをtrueに。)
+  1.EnumPicesで利用可能な駒のリストを取得
+  2.DisplayListに1のリストを渡して表示する
+
+  リストをクリック
+  1.SelectedObjectIdのカメラをIsActivateCameraでfalseに
+  2.GetTouchObjectIdを使ってタッチしたオブジェクトのId取得し、SelectedObjectIdに
+  3.SelectedObjectIdのカメラをIsActivateCameraでtrueに
+
+  (仮案)
+  1.駒の移動相対的な範囲を取得(GetMoveRange)し、絶対Idに変換(GetAdjacentSurface)し、Idから座標に変換(GetPositionFromId)
+  2.そのIDの面にアイコンを表示(メソッド未定義)する
+
+  →アイコンがクリック:そのアイコンに結び付けられた面へと移動する
+  4.アイコンを削除
+  5.相手のターンへ
+
+  →リストがクリック:
+  4.アイコンを削除
+  5.「リストをクリック」へ
+
+end note
+
+note as note2
+  GameSetUpクラス
+  
+  1.設置可能な駒のListの表示
+  2.選択された駒をFieldに置ける位置を表示
+  3.選択されたマスに駒をおいてポイントを減らす
+  4.ポイントがなくなるまで続ける
+  5.両者のポイントがなくなったらPlayGameへ
+
+  *駒の削除は駒視点の削除ボタンから行う(あと戻るボタンで俯瞰視点に戻れる)
+
+
+end note
+@enduml

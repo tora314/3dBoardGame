@@ -1,0 +1,70 @@
+@startuml
+
+
+namespace  Piece{
+note as note1
+可動範囲はそれぞれ相対Idで定義して、
+それをField namespaceのList<int id> GetAdjacentSurface(int crrId)
+で絶対座標に変換
+
+-void SetPiecesId(int pieceId , GameObject obj)
+-abstract void GenarateMyself()
+はコンストラクタで実行
+end note
+
+    Interface IPiece{
+        float GetSummonCost(void)
+        GameObject GetPieceCamera(int id)
+        int GetPieceId(void)
+        Field.FieldInfo GetMoveRange
+
+    }
+
+    interface IMovePieces{
+        bool MovePiece(Vector3 position)
+        bool RotatePiece(Vector3 rotate)
+    }
+
+    abstract MovePiece{
+
+    }
+
+    MovePiece --|>IMovePieces
+
+
+    abstract Pieces{
+        -Dictionary<int SurfaceType List<bool canMove>> MoveRange
+        -float SummonCast
+        -GameObject Cameara
+        -int PieceId
+
+        -abstract void GenarateMyself()
+    }
+
+    note bottom of IPieceManager : GenaratePiece()実行時に\nPicesにIdとGameObjが保存  
+    interface IPieceManager{
+        Pieces GetPiecesById(int pieceId)
+        int GenaratePiece(string PieceName) : return PieceId 
+
+    }
+    
+    class PieceManager{
+        Dictionary<int  pieceId GameObject PieceObj> Pieces
+
+    }
+    PieceManager --|>IPieceManager
+    PieceManager -right-> Pieces
+
+    Pieces..note1
+    Pieces --|>IPiece
+    Pieces --|>MovePiece
+
+    
+
+    King --u|>Pieces
+    Queen --u|>Pieces
+    Porn --u|>Pieces
+    Rook --u|>Pieces
+    Bishop --u|>Pieces
+}
+@enduml
