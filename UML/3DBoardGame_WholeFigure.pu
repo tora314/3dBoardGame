@@ -1,3 +1,447 @@
 @startuml
+namespace GameManager{
+    enum GameState{
+        #Title
+        #GameSetUp
+        #PlayGame
+        #Result
+    }
+
+    abstract GameBaseManager{
+      -void ChangeGameState(GameState gameState)
+    }
+
+    class GameManager{
+
+    }
+
+    class GameDebugManager{
+
+    }
+
+    class ManagerStore{
+        +static PlayerBase Player
+        +static PlayerBase NPC
+        +static FieldManager fieldManager
+        +static PieceManager pieceManager 
+        +static InputManager input
+
+    }
+
+  
+
+ 
+    namespace GameSetUp{
+        
+         class GameSetUp{
+
+        }
+
+        class GameSetUpFactory{
+            ListCtrl GetListCtrlListener()
+            PieceManager GetPieceManagerListener()
+
+        }
+
+        class PointManager{
+            void AddPoint(Picees piece)
+            void ReducePoint(Pieces piece)
+            int GetPoint()
+        }
+
+        class SetUpCameraManager{
+            void ChangeSetUpCamera()
+        }
+
+
+        GameSetUp --> GameSetUpFactory
+        GameSetUp --> SetUpCameraManager
+        GameSetUp -->PointManager
+
+    }
+
+
+    namespace PlayGame{
+
+        class PlayGame{
+          -int SelectedObjectId
+        }
+
+        class TurnManager{
+            int crrTurn
+
+            int GetTurn()
+            void ChangeTurn()
+        }
+
+        
+        class PlayCameraManager{
+            int crrCameraId
+
+            void ChangeCamera(int pieceId)
+        }
+
+        class PlayGameFactory{
+            ListCtrl GetListCtrlListener()
+            FieldManager GetFieldManagerListener()
+
+        }
+
+        PlayGame --> GameJudgement
+        PlayGame --> PlayGameFactory
+        PlayGame -->TurnManager
+        PlayGame -->PlayCameraManager
+
+
+    }
+
+
+    abstract StateBase{
+        abstract void ExcuteState()
+        InputManager input
+        SoundManager sound
+    }
+
+
+
+
+    namespace ListManager{
+        interface IListManager{
+            List<int pieceId> EnumPieces()
+            void GetSelectedPieces() : GameObject
+            void DisplayList()
+        }
+
+
+
+        class ListCtrl{
+            List<int pieceId> EnabledPiecesId
+        }
+
+        ListCtrl --|> IListManager
+  
+
+    }
+
+    namespace TitleManager{
+        interface ITitle{
+            void StartGame()
+        }
+
+        class Title{
+        }
+
+        Title --|>ITitle
+    }
+
+    namespace ResultManager{
+        interface IResult{
+            void SetResult()
+            void Restart()
+            void CalcurateScore()
+        }
+
+        class Result{
+
+        }
+
+        Result --|>IResult
+    }
+
+    class StateFactory{
+        +StateBase GetTitle()
+        +StateBase GetPlayGame()
+        +StateBase GetGameSet()
+        +StateBase GetResult()
+    }
+
+    GameManager --|>GameBaseManager
+    GameDebugManager --|>GameBaseManager
+
+
+
+    GameManager.GameState <-u-GameBaseManager
+
+    StateFactory <-d-GameBaseManager
+
+
+    GameManager.GameSetUp.GameSetUp-u--|>StateBase
+    GameManager.PlayGame.PlayGame -u--|>StateBase
+    GameManager.TitleManager.Title-u--|>StateBase
+    GameManager.ResultManager.Result -u--|>StateBase
+
+
+    GameManager.GameSetUp.GameSetUp<-d--StateFactory
+    GameManager.PlayGame.PlayGame <-d--StateFactory
+    GameManager.TitleManager.Title<-d--StateFactory
+    GameManager.ResultManager.Result <-d--StateFactory
+
+    GameManager.PlayGame.PlayGame -u-->ManagerStore
+    GameManager.GameSetUp.GameSetUp -u--->ManagerStore
+   
+    GameManager.GameSetUp.GameSetUp -u--->GameManager.PlayGame.PlayCameraManager
+
+
+
+
+GameManager.PlayGame.PlayGameFactory --u>GameManager.ListManager.ListCtrl
+GameManager.GameSetUp.GameSetUpFactory --u>GameManager.ListManager.ListCtrl
+}
+
+
+
+
+namespace Camera{
+    interface ICamera{
+        +vector3 GetCameraPostion(void)
+        +vector4 GetCameraAngle()
+        +void ActivateCamera(bool OnFlg)
+    }
+
+    abstract CameraBase{
+        -vector3 CameraPosition
+        -vector3 CameraAngle
+        -bool IsActivateCamera
+
+    }
+    CameraBase --|>ICamera
+
+    class PlayCamera{
+
+    }
+
+    class SetUpCamera{
+
+    }
+
+    PlayCamera --|>CameraBase
+    SetUpCamera --|>CameraBase
+}
+
+namespace Field{
+
+interface IField{
+    Vector3 GetPositionFromId(int id)
+    void WriteFieldPieceInfo(int pieceId)
+    void DeleteFieldPieceInfo(int pieceId)
+    void ReadFieldPieceInfo(int pieceId)
+    List<int id> GetAdjacentSurface(int crrId, Vector3 FowardDirection)
+    void PointMoveableFace(List<bool> movableFace)
+
+}
+
+
+
+class FieldManager{
+
+}
+
+class FieldInfo{
+    +Dictionary<int id , Vector3 position> FieldInfo
+}
+
+
+
+class FieldPieceInfo{
+    +Dictionary<int faceId , int pieceId  > FieldPieceInfo 
+}
+
+FieldManager-->FieldInfo
+FieldManager -->FieldPieceInfo
+
+
+FieldManager --|>IField
+
+}
+
+namespace CP{
+    interface ICP{
+        void SetInfo(NPC npc , FieldManager  field)
+        CPMove BestMove()
+    }
+
+    class CPMove{
+        -int pieceId
+        -int moveFaceId
+
+        int GetMovePieceId()
+        int GetMoveFaceId()
+    }
+
+    class CPBrain{
+
+    }
+
+    CPBrain --|>ICP
+    CPBrain -->CPMove
+
+}
+
+namespace Player{
+  interface IPlayer{
+    +List<GameObject> GetMyPieces(void) 
+    +Dictionary<string float> GetPlayerId(void)  
+    +void SetMyPieces(List<GameObject>)
+  }
+
+  abstract PlayerBase{
+      -List<GameObject> MyPieces
+      -int PlayerId
+
+  }
+
+  PlayerBase --|>IPlayer
+
+  class Player{
+
+  }
+
+  Player --> PlayerBase
+
+  class NPC{
+
+  }
+
+  NPC --> PlayerBase
+}
+
+namespace  Piece{
+
+
+    Interface IPiece{
+        float GetSummonCost(void)
+        GameObject GetPieceCamera(int id)
+        int GetPieceId(void)
+        Field.FieldInfo GetMoveRange
+
+    }
+
+    interface IMovePieces{
+        bool MovePiece(Vector3 position)
+        bool RotatePiece(Vector3 rotate)
+    }
+
+    abstract MovePiece{
+
+    }
+
+    MovePiece --|>IMovePieces
+
+
+    abstract Pieces{
+        -Dictionary<int SurfaceType List<bool canMove>> MoveRange
+        -float SummonCast
+        -GameObject Cameara
+        -int PieceId
+
+        -abstract void GenarateMyself()
+    }
+
+   
+    interface IPieceManager{
+        Pieces GetPiecesById(int pieceId)
+        int GenaratePiece(string PieceName) : return PieceId 
+
+    }
+    
+    class PieceManager{
+        Dictionary<int  pieceId GameObject PieceObj> Pieces
+
+    }
+    PieceManager --|>IPieceManager
+    PieceManager -right-> Pieces
+
+
+    Pieces --|>IPiece
+    Pieces --|>MovePiece
+
+    
+
+    King --u|>Pieces
+    Queen --u|>Pieces
+    Porn --u|>Pieces
+    Rook --u|>Pieces
+    Bishop --u|>Pieces
+}
+
+namespace Sound{
+    interface ISound{
+        void PlayBGM(int bgmId )
+        void StopBGM(int bgmId )
+        void PlaySE(int seId)
+    }
+
+    class SoundManager{
+
+        
+    }
+
+    class BGMInfo{
+            +Dictionary<id BGMId , string BGMName>  BgmInfo
+    }
+
+    class SEInfo{
+        +Dictionary<id SEId , string SEName>  SEInfo
+    }
+
+    SoundManager --|>ISound
+
+    SoundManager --> BGMInfo
+    SoundManager -->SEInfo
+}
+
+namespace Input{
+    interface IInput{
+         InputEvent GetFlickListener()
+         InputEvent GetTouchListener()
+    }
+
+    class InputManager{
+        
+
+    }
+
+    class InputEventFactory{
+        InputEvent GetFlick()
+        InputEvent GetTouch()
+    }
+
+    abstract InputEvent{
+        float GetTouchDeltaTime()
+    }
+
+    class FlickEvent{
+        Vector3 FlickDirection()
+
+    }
+
+    class TouchEvent{
+        
+        int GetTouchObjectId()
+    }
+
+    InputManager -u-|>IInput
+    InputManager-->InputEventFactory
+
+    TouchEvent -u-|> InputEvent
+    FlickEvent -u-|> InputEvent
+
+    InputEventFactory -->FlickEvent
+    InputEventFactory -->TouchEvent
+}
+
+GameManager.ManagerStore---->Player.Player
+GameManager.ManagerStore---->Player.NPC
+GameManager.ManagerStore---->Field.FieldManager
+GameManager.ManagerStore---->Piece.PieceManager
+GameManager.StateBase---->Input.InputManager
+GameManager.StateBase---->Sound.SoundManager
+GameManager.PlayGame.PlayGame---->CP.CPBrain
+GameManager.GameSetUp.GameSetUp---->CP.CPBrain
+
+Player.PlayerBase ----> Piece.PieceManager
+
+
+Piece.Pieces--->Camera.CameraBase
 
 @enduml
