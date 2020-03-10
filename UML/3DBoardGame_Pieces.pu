@@ -1,0 +1,81 @@
+@startuml
+
+
+namespace  Piece{
+    title Pieceネームスペース 3/10 更新
+
+    interface IFieldPiece{
+        bool MovePiece(Vector3 position)
+        bool RotatePiece(Vector3 rotate)
+    }
+
+    interface IPieces{
+      void Init(int pieceId, string kindName);
+      void Move(Vector3 ToPosition);
+      void Rotate(Vector3 rotate);
+    }
+
+    interface IPiecesManager{
+        GameObject GetPieceById(int pieceId);
+        float GetSummonCost(string pieceKind);
+        void GenaratePiece(String piec  eKind,int absoluteFaceId);
+        Dictionary<int SurfaceType List<bool canMove>> GetMoveRange(string pieceKind);
+    }
+
+    abstract Pieces{
+      - int Id = 100;
+      - string Name = null;
+    }
+
+    class PiecesManager{
+        -int PiecsNum=0;
+        Dictionary<string  pieceId,PieceInfo  PieceObj> AllPieceInfo
+        Dictionary<int  pieceId,GameObject PieceObj> AllObjPieces
+    }
+
+    abstract  PieceInfo{
+      string Name;
+      float SummonCost;
+      Dictionary<int SurfaceType List<bool canMove>> MoveRange
+      public GameObject Prefab
+    }
+
+    class FieldPiece{
+      int PieceId;
+      string pieceKind;
+      void init(int PieceId,string pieceKind)
+    }
+
+    King -d-|>PieceInfo
+    Queen -d-|>PieceInfo
+    Rook -d-|>PieceInfo
+    Bishop -d-|>PieceInfo
+    Porn -d-|>PieceInfo
+
+    PiecesManager-->King
+    PiecesManager-->Queen
+    PiecesManager-->Rook
+    PiecesManager-->Bishop
+    PiecesManager-->Porn
+
+    PiecesManager-u->IPiecesManager
+    PiecesManager-r->FieldPiece
+
+    FieldPiece --|>IFieldPiece
+
+    Pieces-r-|>IPieces
+
+}
+
+FieldPiece-d-|>Piece.Pieces
+Piece.PiecesManager-d->FieldPiece
+
+
+note as note1
+FieldPiece:駒のプレハブが持つ。設置される時にPiecesManagerがInitを呼び出し、Idを振る
+
+PieceInfoに書き込まれているMoveRangeは普遍的駒の移動範囲。
+（あるルークは縦横に自由に移動できる、みたいな）
+end note
+
+@enduml
