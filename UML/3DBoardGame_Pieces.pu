@@ -16,7 +16,7 @@ namespace  Piece{
     }
 
     interface IPiecesManager{
-        GameObject GetPieceById(int pieceId);
+        Pieces GetPieceById(int pieceId);
         float GetSummonCost(string pieceKind);
         void GenaratePiece(String piec  eKind,int absoluteFaceId);
         Dictionary<int SurfaceType List<bool canMove>> GetMoveRange(string pieceKind);
@@ -25,12 +25,13 @@ namespace  Piece{
     abstract Pieces{
       - int Id = 100;
       - string Name = null;
+      + GameObject Camera
     }
 
     class PiecesManager{
         -int PiecsNum=0;
         Dictionary<string  pieceId,PieceInfo  PieceObj> AllPieceInfo
-        Dictionary<int  pieceId,GameObject PieceObj> AllObjPieces
+        Dictionary<int  pieceId,Pieces pieces> AllPieces
     }
 
     abstract  PieceInfo{

@@ -15,7 +15,7 @@
 //        Piece.PiecesManager PM = gameobject.GetComponent<Piece.PiecesManager>();
 //        Debug.Log(PM.GetSummonCost("King"));
 //        PM.GeneratePiece("King", 1);
-//        GameObject a = PM.GetPieceObjById(0);
+//        Piece.Pieces a = PM.GetPieceById(0);
 //        if (a != null)
 //        {
 //            a.GetComponent<FieldPiece>().testfunc();

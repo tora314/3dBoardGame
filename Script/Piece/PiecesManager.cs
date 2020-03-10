@@ -19,7 +19,7 @@ namespace Piece
 {
     interface IPiecesManager
     {
-        GameObject GetPieceObjById(int pieceId);
+        Pieces GetPieceById(int pieceId);
         float GetSummonCost(String pieceKind);
         void GeneratePiece(String pieceKind, int absoluteFaceId);
         Dictionary<int, List<bool>> GetMoveRange(string pieceKind);
@@ -31,7 +31,7 @@ namespace Piece
 
         private int PieceNum = 0;
         Dictionary<string, PieceInfo> AllPieceInfo = new Dictionary<string, PieceInfo>();
-        Dictionary<int, GameObject> AllObjPieces = new Dictionary<int, GameObject>();
+        Dictionary<int, Pieces> AllPieces = new Dictionary<int, Pieces>();
 
         void Awake()
         {
@@ -50,7 +50,8 @@ namespace Piece
             //追加::
             //fieldnamespaceの面の絶対IDから座標を受け取る関数            //Instantiate(obj, position, Quaternion.Identity);
             GameObject ins = Instantiate(obj, new Vector3(0, 0, 0), Quaternion.identity);
-            AllObjPieces.Add(PieceNum, ins);
+            var temp = ins.GetComponent<FieldPiece>();
+            AllPieces.Add(PieceNum, temp);
             ins.GetComponent<FieldPiece>().Init(PieceNum, pieceKind);
             PieceNum += 1;
         }
@@ -60,9 +61,9 @@ namespace Piece
             return AllPieceInfo[pieceKind].Cost;
         }
 
-        public GameObject GetPieceObjById(int pieceId)
+        public Pieces GetPieceById(int pieceId)
         {
-            return AllObjPieces[pieceId];
+            return AllPieces[pieceId];
         }
 
         public Dictionary<int, List<bool>> GetMoveRange(string pieceKind)
