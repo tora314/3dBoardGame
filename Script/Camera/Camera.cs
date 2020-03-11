@@ -28,11 +28,31 @@ namespace GetPieceCamera
 
     class SetUpCamera : MonoBehaviour, ICamera
     {
+        public vector3 GetCameraPosition(void){
 
+        }
+
+        public vector4 GetCameraAngle(void){
+
+        }
+
+        void ActivateCamera(bool OnFlg){
+
+        }
     }
 
     class PlayCamera : MonoBehaviour, ICamera
     {
+        public vector3 GetCameraPosition(void){
 
+        }
+
+        public vector4 GetCameraAngle(void){
+
+        }
+
+        void ActivateCamera(bool OnFlg){
+
+        }
     }
 }
